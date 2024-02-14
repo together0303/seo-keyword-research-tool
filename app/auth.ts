@@ -6,11 +6,12 @@ export const {
   auth
 } = NextAuth({
   providers: [
-    GitHub({
-      clientId: process.env.OAUTH_CLIENT_KEY as string,
-      clientSecret: process.env.OAUTH_CLIENT_SECRET as string
-    })
+    // GitHub({
+    //   clientId: process.env.OAUTH_CLIENT_KEY as string,
+    //   clientSecret: process.env.OAUTH_CLIENT_SECRET as string
+    // })
   ],
+  secret: process.env.secret,
   pages: {
     signIn: '/sign-in'
   }
