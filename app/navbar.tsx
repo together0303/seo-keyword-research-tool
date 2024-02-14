@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Tooltip } from 'react-tippy';
+import {Tooltip} from './components/Tooltip';
 
 const navigation = [
   { name: 'KD Research', href: '/kd-research' },
@@ -54,10 +54,7 @@ export default function Navbar({ user }: { user: any }) {
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
                 <Menu as="div" className="relative ml-3">
                   <Tooltip
-                    title="Need help?"
-                    position="top"
-                    trigger="mouseenter"
-                    arrow={true}
+                    content='Need help?'
                   >
                     <Menu.Button className="h-8 items-center flex justify-center">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

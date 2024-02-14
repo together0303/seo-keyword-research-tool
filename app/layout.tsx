@@ -4,7 +4,6 @@ import { Analytics } from '@vercel/analytics/react';
 import Nav from './nav';
 import Toast from './toast';
 import { Suspense } from 'react';
-import 'react-tippy/dist/tippy.css';
 
 export const metadata = {
   title: 'Rankulate - Harnessing KD Research and Competitive Analysis Tools',
