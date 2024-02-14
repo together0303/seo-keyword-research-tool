@@ -6,9 +6,9 @@ import Toast from './toast';
 import { Suspense } from 'react';
 
 export const metadata = {
-  title: 'Next.js App Router + NextAuth + Tailwind CSS',
+  title: 'Rankulate - Harnessing KD Research and Competitive Analysis Tools',
   description:
-    'A user admin dashboard configured with Next.js, Postgres, NextAuth, Tailwind CSS, TypeScript, ESLint, and Prettier.'
+    'ankulate offers cutting-edge SEO tools designed to leverage in-depth KD research and competitive analysis, empowering businesses to enhance their online visibility and drive organic traffic. Stay ahead of the competition with Rankulate\'s comprehensive suite of SEO solutions'
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
           <Nav />
         </Suspense>
         {children}
-        <Analytics />
+        {/* <Analytics /> */}
         {/* <Toast /> */}
       </body>
     </html>
