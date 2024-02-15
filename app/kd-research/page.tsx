@@ -1,12 +1,35 @@
 "use client";
 
-import { RiInformationLine, RiSearchLine } from '@remixicon/react';
-import { Title, Text, TextInput, Button, Grid, Card, BarChart } from '@tremor/react';
+import { RiArrowRightLine, RiFileCopyFill, RiFileCopyLine, RiFlag2Fill, RiInformationLine, RiSearchLine } from '@remixicon/react';
+import { Title, Text, TextInput, Button, Grid, Card, BarChart, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Badge } from '@tremor/react';
 import TTIcon from '../components/icons/TTIcon';
 import CountryPicker from '../components/CountryPicker';
 import { useState } from 'react';
 import KDCart from '../components/KDChart';
 import { Tooltip } from '../components/Tooltip';
+
+const data = [
+  {
+    keyword: 'user experience design',
+    Role: 'What is user experience design?',
+  },
+  {
+    keyword: 'ux design',
+    Role: 'How ux design can be used to generate more revenue?',
+  },
+  {
+    keyword: 'ux ui designer',
+    Role: 'What is the role of UI UX designer?',
+  },
+  {
+    keyword: 'ui ux',
+    Role: 'How does UI and UX are different?',
+  },
+  {
+    keyword: 'google ux design',
+    Role: 'How does Google uses UX design?',
+  }
+];
 
 export default function IndexPage() {
   const [country, setCountry] = useState('');
@@ -24,7 +47,7 @@ export default function IndexPage() {
       <Title>KD Research</Title>
       <Text>Unlocking SEO Success: Understanding Keyword Difficulty with Research Tools</Text>
       <div className='mt-4'>
-        <Title>Search & Location</Title>
+        <Title className='my-4'>Search & Location</Title>
         <div className='flex flex-row bg-white p-3 gap-2 rounded-md h-16 max-w-[700px]'>
             <TextInput icon={TTIcon} placeholder="Search..." />
               <CountryPicker country={country} setCountry={setCountry} />
@@ -34,9 +57,10 @@ export default function IndexPage() {
         </div>
       </div>
       <div className='mt-4'>
+        <Title className='my-4'>Keyword difficulty - definition</Title>
         <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -47,7 +71,7 @@ export default function IndexPage() {
             </div>
           </Card>
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -58,7 +82,7 @@ export default function IndexPage() {
             </div>
           </Card>
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -69,7 +93,7 @@ export default function IndexPage() {
             </div>
           </Card>
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -80,7 +104,7 @@ export default function IndexPage() {
             </div>
           </Card>
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -91,7 +115,7 @@ export default function IndexPage() {
             </div>
           </Card>
           <Card className='p-4 relative'>
-            <h3 className='text-[#425752] text-sm font-semibold'>Keyword Difficulty</h3>
+            <h3 className='text-[#425752] text-md font-semibold'>Keyword Difficulty</h3>
             <Tooltip
               content='Keyword Difficulty (KD) - Is an SEO metric that estimates how hard it would be to rank on the first page of Google for a given keyword. It is measured on a scale from 0 to 100, with the latter being the hardest to rank for.'
             >
@@ -101,6 +125,12 @@ export default function IndexPage() {
               <KDCart value={99}></KDCart>
             </div>
           </Card>
+        </Grid>
+      </div>
+      
+      <div className='mt-4'>
+        <Title className='my-4'>Details on chart</Title>
+        <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
           <Card className='p-4 relative'>
             <h3 className="text-[#425752] text-sm font-semibold">Global Search Volume</h3>
             <Tooltip
@@ -154,7 +184,96 @@ export default function IndexPage() {
             />
           </Card>
         </Grid>
-      
+      </div>
+      <div className='mt-4'>
+        <Title className='my-4'>Keyword suggestions ( + Long tail keywords & questions) - hovers, tooltips</Title>
+        <Grid numItemsSm={1} numItemsLg={2} className="gap-6">
+          
+          <Card className='p-6 relative'>
+            <h3 className='text-[#0B0F0D] text-lg font-semibold'>Keyword Suggestions</h3>
+            <div className='mt-2'>
+            <table className="mt-5 text-sm w-full text-[#425752]">
+              <thead className=''>
+                <tr>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>No.</th>
+                  <th className='w-8/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
+                  <th className='w-3/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
+                    <Tooltip content='Search Volume'><span>SV</span></Tooltip>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item, index) => (
+                  <tr key={index} className='border-0 h-8 hover:bg-[#F1F4F3] hover-parent'>
+                    <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>{index + 1}</td>
+                    <td className='py-2 px-1 h-8 font-medium text-[#0B0F0D]'>
+                      <div className='w-full flex justify-between '>
+                        <span>{item.keyword}</span>
+                        <Tooltip content='Copy'>
+                          <span className='hover-child cursor-pointer'>
+                            <RiFileCopyLine className='w-4 h-4 text-[#425752]'/>
+                            </span>
+                        </Tooltip>
+                      </div>
+                    </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D] rounded-e-md'>
+                      55,658
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>   
+            <div className='mt-2'>
+              <div className='bg-[#F1F4F3] text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-[#E1F1F1] '>
+                <span className='hidden sm:block'>View All Keywords</span>
+                <span><RiArrowRightLine /></span>
+              </div>
+            </div>           
+            </div>
+          </Card>
+          <Card className='p-6 relative'>
+            <h3 className='text-[#0B0F0D] text-lg font-semibold'>Long tail keywords & questions</h3>
+            <div className='mt-2'>
+              <table className="mt-5 text-sm w-full text-[#425752]">
+                <thead className=''>
+                  <tr>
+                    <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>No.</th>
+                    <th className='w-8/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
+                    <th className='w-3/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
+                      <Tooltip content='Search Volume'><span>SV</span></Tooltip>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className='border-0 h-8 hover:bg-[#F1F4F3] hover-parent'>
+                      <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>{index + 1}</td>
+                      <td className='py-2 px-1 h-8 font-medium text-[#0B0F0D]'>
+                        <div className='w-full flex justify-between '>
+                          <span>{item.Role}</span>
+                          <Tooltip content='Copy'>
+                            <span className='hover-child cursor-pointer'>
+                              <RiFileCopyLine className='w-4 h-4 text-[#425752]'/>
+                            </span>
+                          </Tooltip>
+                        </div>
+                      </td>
+                      <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D] rounded-e-md'>
+                        55,658
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>              
+            </div>
+            <div className='mt-2'>
+              <div className='bg-[#F1F4F3] text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-[#E1F1F1] '>
+                <span className='hidden sm:block'>View All Keywords</span>
+                <span><RiArrowRightLine /></span>
+              </div>
+            </div>
+          </Card>
+        </Grid>
       </div>
     </main>
   );

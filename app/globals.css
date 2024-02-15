@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.hover-parent:hover .hover-child {
+    display: block;
+}
+
+.hover-child {
+    display: none;
+}
