@@ -1,39 +1,45 @@
 "use client";
 
 import { RiArrowRightLine, RiFileCopyFill, RiFileCopyLine, RiFlag2Fill, RiInformationLine, RiSearchLine } from '@remixicon/react';
-import { Title, Text, TextInput, Button, Grid, Card, BarChart, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Badge } from '@tremor/react';
+import { Title, Text, TextInput, Button, Grid, Card, BarChart, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Badge, BadgeDelta } from '@tremor/react';
 import TTIcon from '../components/icons/TTIcon';
 import CountryPicker from '../components/CountryPicker';
 import { useState } from 'react';
 import KDCart from '../components/KDChart';
 import { Tooltip } from '../components/Tooltip';
+import { CheckBadgeIcon } from '@heroicons/react/24/outline';
 
 const data = [
   {
     keyword: 'user experience design',
     Role: 'What is user experience design?',
+    kd: 14
   },
   {
     keyword: 'ux design',
     Role: 'How ux design can be used to generate more revenue?',
+    kd: 84
   },
   {
     keyword: 'ux ui designer',
     Role: 'What is the role of UI UX designer?',
+    kd: 100
   },
   {
     keyword: 'ui ux',
     Role: 'How does UI and UX are different?',
+    kd: 69
   },
   {
     keyword: 'google ux design',
     Role: 'How does Google uses UX design?',
+    kd: 29
   }
 ];
 
 export default function IndexPage() {
   const [country, setCountry] = useState('');
-
+  const [checked, setChecked] = useState<number[]>([]);
   function generateRandomNumbers(min: number, max: number, count: number) {
     const randomNumbers = [];
     for (let i = 0; i < count; i++) {
@@ -41,6 +47,34 @@ export default function IndexPage() {
         randomNumbers.push({date: 'Sep 23 2023', volume: randomNumber});
     }
     return randomNumbers;
+  }
+  function getBgClassByKD(kd: number) {
+      if (kd > 90) return 'border-[#EF4444] bg-[#F87171]'
+      else if (kd > 80) return 'border-[#F97316] bg-[#FB923C]'
+      else if (kd > 65) return 'border-[#F59E0B] bg-[#FBBF24]'
+      else if (kd > 35) return 'border-[#84CC16] bg-[#A3E635]'
+      else if (kd > 20) return 'border-[#84CC16] bg-[#A3E635]'
+      else return 'border-[#22C55E] bg-[#4ADE80]'
+
+  }
+  function handleChecked(c: Boolean, ind: number) {
+    if ( ind === -1 ) {
+      // if (c) {
+      //   const arr = [];
+      //   for (let i = 0; i < data.length; i++) {
+      //     arr.push(i);          
+      //   }
+      //   setChecked(arr);
+      // } else {
+      //   setChecked([]);
+      // }
+    } else {
+      if (c) {
+        setChecked([...checked, ind]);
+      } else {
+        setChecked(checked.filter(cc => cc !== ind));
+      }
+    }
   }
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl mt-16">
@@ -192,17 +226,17 @@ export default function IndexPage() {
           <Card className='p-6 relative'>
             <h3 className='text-[#0B0F0D] text-lg font-semibold'>Keyword Suggestions</h3>
             <div className='mt-2'>
-            <table className="mt-5 text-sm w-full text-[#425752]">
-              <thead className=''>
+            <table className="mt-5 w-full text-[#425752]">
+              <thead className='text-xs'>
                 <tr>
                   <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>No.</th>
-                  <th className='w-8/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
-                  <th className='w-3/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
+                  <th className='w-9/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
+                  <th className='w-2/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
                     <Tooltip content='Search Volume'><span>SV</span></Tooltip>
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className='text-sm'>
                 {data.map((item, index) => (
                   <tr key={index} className='border-0 h-8 hover:bg-[#F1F4F3] hover-parent'>
                     <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>{index + 1}</td>
@@ -223,7 +257,7 @@ export default function IndexPage() {
                 ))}
               </tbody>
             </table>   
-            <div className='mt-2'>
+            <div className='mt-4'>
               <div className='bg-[#F1F4F3] text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-[#E1F1F1] '>
                 <span className='hidden sm:block'>View All Keywords</span>
                 <span><RiArrowRightLine /></span>
@@ -234,17 +268,17 @@ export default function IndexPage() {
           <Card className='p-6 relative'>
             <h3 className='text-[#0B0F0D] text-lg font-semibold'>Long tail keywords & questions</h3>
             <div className='mt-2'>
-              <table className="mt-5 text-sm w-full text-[#425752]">
-                <thead className=''>
+              <table className="mt-5 w-full text-[#425752]">
+                <thead className='text-xs'>
                   <tr>
                     <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>No.</th>
-                    <th className='w-8/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
-                    <th className='w-3/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
+                    <th className='w-9/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold'>Keyword</th>
+                    <th className='w-2/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
                       <Tooltip content='Search Volume'><span>SV</span></Tooltip>
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className='text-sm'>
                   {data.map((item, index) => (
                     <tr key={index} className='border-0 h-8 hover:bg-[#F1F4F3] hover-parent'>
                       <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>{index + 1}</td>
@@ -266,7 +300,7 @@ export default function IndexPage() {
                 </tbody>
               </table>              
             </div>
-            <div className='mt-2'>
+            <div className='mt-4'>
               <div className='bg-[#F1F4F3] text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-[#E1F1F1] '>
                 <span className='hidden sm:block'>View All Keywords</span>
                 <span><RiArrowRightLine /></span>
@@ -274,6 +308,81 @@ export default function IndexPage() {
             </div>
           </Card>
         </Grid>
+      </div>
+      <div className='mt-4'>
+        <Title className='my-4'>SERP Overview</Title>
+        <div className='hidden border-[#EF4444] bg-[#F87171]'></div>
+        <div className='hidden border-[#F97316] bg-[#FB923C]'></div>
+        <div className='hidden border-[#F59E0B] bg-[#FBBF24]'></div>
+        <div className='hidden border-[#EAB308] bg-[#EAB308]'></div>
+        <div className='hidden border-[#84CC16] bg-[#A3E635]'></div>
+        <div className='hidden border-[#22C55E] bg-[#4ADE80]'></div>
+        <Grid numItemsSm={1} numItemsLg={1} className="gap-6">
+          <Card className='p-6 relative'>
+            <h3 className='text-[#0B0F0D] text-lg font-semibold'>Keyword Suggestions</h3>
+            <div className='mt-2'>
+            <table className="mt-5 w-full text-[#425752] border-separate border-spacing-x-0 border-spacing-y-1">
+              <thead className='text-xs'>
+                <tr>
+                  <th className='border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>
+                    <input type='checkbox' onChange={(e) => handleChecked(e.target.checked, -1)} />
+                  </th>
+                  <th className='border-b border-[#D4DEDB] py-2 px-1 font-semibold text-center'>No.</th>
+                  <th className='w-5/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-left'>URL</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>KD</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>DA</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>UR</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>Backlinks</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>Ref.domains</th>
+                  <th className='w-1/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>Keywords</th>
+                  {/* <th className='w-2/12 border-b border-[#D4DEDB] py-2 px-1 font-semibold text-right'>
+                    <Tooltip content='Search Volume'><span>SV</span></Tooltip>
+                  </th> */}
+                </tr>
+              </thead>
+              <tbody className='text-sm'>
+                {data.map((item, index) => (
+                  <tr key={index} className={`border-0 h-8 hover-parent ${checked.includes(index) ? 'bg-[#05D5BF12]' : 'hover:bg-[#F1F4F3]'}`}>
+                    <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>
+                      <input type='checkbox' onChange={(e) => handleChecked(e.target.checked, index)}/>
+                    </td>
+                    <td className='py-2 px-1 h-8 font-medium text-center'>
+                      {index + 1}
+                    </td>
+                    <td className='py-2 px-1 h-8 font-medium text-[#0B0F0D]'>
+                      <div className='w-full flex justify-between '>
+                        <span>{item.keyword}</span>
+                        <Tooltip content='Copy URL'>
+                          <span className='hover-child cursor-pointer'>
+                            <RiFileCopyLine className='w-4 h-4 text-[#425752]'/>
+                            </span>
+                        </Tooltip>
+                      </div>
+                    </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D]'>
+                    <Tooltip content='Keyword difficulty - '>
+                      <Badge className={`w-8 h-5 text-xs text-[#0B0F0D] border ${getBgClassByKD(item.kd)}`}>{item.kd}</Badge>
+                    </Tooltip>
+                    </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D]'> 66 </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D]'> 66 </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D]'> 55,658 </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D]'> 55,658 </td>
+                    <td className='py-2 px-1 h-8 font-medium text-right text-[#0B0F0D] rounded-e-md'> 765 </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>   
+            <div className='mt-4'>
+              <div className='bg-[#F1F4F3] text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-[#E1F1F1] '>
+                <span className='hidden sm:block'>Show top 100 positions</span>
+                <span><RiArrowRightLine /></span>
+              </div>
+            </div>           
+            </div>
+          </Card>
+        </Grid>
+
       </div>
     </main>
   );

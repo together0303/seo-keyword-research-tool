@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 .hover-parent:hover .hover-child {
-    display: block;
+    visibility: visible;
 }
 
 .hover-child {
-    display: none;
+    visibility: hidden;
 }
