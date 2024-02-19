@@ -8,10 +8,10 @@ const countries = [
     { short: 'US', name: 'United States', flag: US },
     { short: 'UK', name: 'United Kingdom', flag: GB },
 ]
-export default function CountryPicker(props: {country: string, setCountry: Function}) {
+function CountryPicker({country= '', setCountry= () => {}, className= ''}: {country: string, setCountry: Function, className?: string}) {
     const getSelectedIcon = () => {
-        if ( props.country ) {
-            const selCountry = countries.find(c => c.short === props.country);
+        if ( country ) {
+            const selCountry = countries.find(c => c.short === country);
             if (selCountry) return selCountry.flag;
         }
         return RiSearchLine;
@@ -19,8 +19,9 @@ export default function CountryPicker(props: {country: string, setCountry: Funct
     return <>
         <SearchSelect 
             icon={getSelectedIcon()} 
-            value={props.country} 
-            onValueChange={(ele) => props.setCountry(ele)}
+            value={country} 
+            onValueChange={(ele) => setCountry(ele)}
+            className={className}
         >
             { countries.map((c, index) => (
                 <SearchSelectItem 
@@ -34,3 +35,5 @@ export default function CountryPicker(props: {country: string, setCountry: Funct
         </SearchSelect>
     </>;
 }
+
+export default CountryPicker;

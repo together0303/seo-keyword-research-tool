@@ -11,12 +11,16 @@ export default {
     current: 'currentColor',
     extend: {
       colors: {
+        'brand': '#05D5BF',
+        // 'default-border': '#D4DEDB',
+        // 'primary-text': '#425752',
         // light mode
         tremor: {
           brand: {
             faint: '#eff6ff', // blue-50
-            muted: '#bfdbfe', // blue-200
+            muted: '#05D5BF', // blue-200
             subtle: '#60a5fa', // blue-400
+            // DEFAULT: '#0B0F0D', // blue-500
             DEFAULT: '#3b82f6', // blue-500
             emphasis: '#1d4ed8', // blue-700
             inverted: '#ffffff' // white
@@ -41,6 +45,59 @@ export default {
             inverted: '#ffffff' // white
           }
         }
+      },      
+      minWidth: {
+        'xs': '350px',
+        'sm': '768px',
+        'md': '992px',
+        'lg': '1200px'
+      },
+      borderColor: {
+        'default': '#D4DEDB',
+        'brand': '#05D5BF',
+        'surface': {
+          'DEFAULT': '#F1F4F3',
+          '600': '#CAD1CF',
+          '800': '#A8BDB7'
+        },
+      },
+      textColor: {
+        'primary': '#0B0F0D',
+        'secondary': '#425752',
+        'tertiary': '#58746D',
+        'brand': '#05D5BF',
+        'surface': {
+          'DEFAULT': '#F1F4F3',
+          '600': '#CAD1CF',
+          '800': '#A8BDB7'
+        },
+      },
+      backgroundColor: {
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '600': '#04B7A6',
+        },
+        'surface': {
+          'DEFAULT': '#F1F4F3',
+          '600': '#CAD1CF',
+          '800': '#A8BDB7'
+        },
+      },
+      ringColor: {
+        'brand': '#05D5BF',
+        'surface': {
+          'DEFAULT': '#F1F4F3',
+          '600': '#CAD1CF',
+          '800': '#A8BDB7'
+        },
+      },
+      fill: {
+        'primary': '#0B0F0D',
+        'brand': '#05D5BF',
+        'secondary': '#A8BDB7'
+      },
+      accent: {
+        'brand': '#05D5BF',
       },
       boxShadow: {
         // light
