@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import FileAddIcon from '../components/icons/FileAddIcon';
 import CountryPicker from '../components/CountryPicker';
 import TTIcon from '../components/icons/TTIcon';
+import Link from 'next/link';
 
 const allowedMimeTypes = [
   'text/csv',
@@ -76,9 +77,11 @@ export default function IndexPage() {
           <div className='border-t'></div>
           <div className='flex gap-2'>
             <CountryPicker className="border-1 mt-2 sm:mt-0" country={country} setCountry={setCountry} />
-            <Button icon={RiSearchLine} className='mt-2 sm:mt-0 bg-brand text-black border-none w-1/2 flex flex-row hover:bg-brand-600 pl-6'>
-              <span>Search Keyword</span>
-            </Button>
+            <Link href="/keyword-overview" className=' w-1/2'>
+              <Button icon={RiSearchLine} className='mt-2 sm:mt-0 bg-brand w-full text-black border-none flex flex-row hover:bg-brand-600 pl-6'>
+                <span className='hidden sm:block'>Search Keyword</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

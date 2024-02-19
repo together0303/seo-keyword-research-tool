@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full bg-[#F1F4F3]">
+    <html lang="en" className="h-full bg-surface">
       <body className="">
         <Suspense>
           <Nav />
