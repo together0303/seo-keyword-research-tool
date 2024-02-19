@@ -1,12 +1,12 @@
 "use client";
 
-import { RiDeleteBin6Line, RiErrorWarningLine, RiFileAddLine, RiFileTextFill, RiSearchLine } from '@remixicon/react';
-import { Title, Text, Textarea, TextInput, Button, Icon } from '@tremor/react';
+import { RiDeleteBin6Line, RiErrorWarningLine, RiFileTextFill, RiSearchLine } from '@remixicon/react';
+import { Textarea, Button, Icon } from '@tremor/react';
 import { useRef, useState } from 'react';
 import FileAddIcon from '../components/icons/FileAddIcon';
 import CountryPicker from '../components/CountryPicker';
 import TTIcon from '../components/icons/TTIcon';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const allowedMimeTypes = [
   'text/csv',
@@ -19,6 +19,9 @@ export default function IndexPage() {
   const [file, setFile] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
+
+  const router = useRouter();
+
   const upload = () => {
     if (fileRef.current) {
       fileRef.current.click();
@@ -35,6 +38,19 @@ export default function IndexPage() {
       }
     } else {
       setError("Please select csv or text file.")
+    }
+  }
+  const goToKeywordOverviewPage = () => {
+    if (file) {
+      router.push('/keyword-overview');
+    } else if (keywords) {
+      if ((keywords.match(/\n/g) || []).length > 0) {
+        router.push('/keyword-manager');
+      } else {
+        router.push('/keyword-overview');
+      }
+    } else {
+      setError("please input keywords or upload file.")
     }
   }
   return (
@@ -77,11 +93,9 @@ export default function IndexPage() {
           <div className='border-t'></div>
           <div className='flex gap-2'>
             <CountryPicker className="border-1 mt-2 sm:mt-0" country={country} setCountry={setCountry} />
-            <Link href="/keyword-overview" className=' w-1/2'>
-              <Button icon={RiSearchLine} className='mt-2 sm:mt-0 bg-brand w-full text-black border-none flex flex-row hover:bg-brand-600 pl-6'>
-                <span className='hidden sm:block'>Search Keyword</span>
-              </Button>
-            </Link>
+            <Button onClick={() => goToKeywordOverviewPage()} icon={RiSearchLine} className='mt-2 sm:mt-0 bg-brand w-1/2 text-black border-none flex flex-row hover:bg-brand-600 pl-6'>
+              <span className='hidden sm:block'>Search Keyword</span>
+            </Button>
           </div>
         </div>
       </div>

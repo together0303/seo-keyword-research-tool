@@ -8,6 +8,7 @@ import { useState } from 'react';
 import KDCart from '../components/KDChart';
 import { Tooltip } from '../components/Tooltip';
 import FilterButton from '../components/FilterButton';
+import Link from 'next/link';
 
 const data = [
     {
@@ -75,7 +76,7 @@ export default function IndexPage() {
                 <div className='py-8'>
                     <h3 className='text-primary font-semibold text-2xl sm:text-3xl'>Welcome, Jason</h3>
                 </div>
-                <div className='flex flex-col gap-7'>
+                <div className='flex flex-col gap-6'>
                     <div className='bg-white p-3 gap-2 rounded-md max-w-[368px] sm:max-w-[768px] sm:flex flex-row sm:h-16'>
                         <TextInput className='border-1 mt-2 sm:mt-0' icon={TTIcon} placeholder="Search..." />
                         <CountryPicker className="border-1 mt-2 sm:mt-0" country={country} setCountry={setCountry} />
@@ -192,10 +193,10 @@ export default function IndexPage() {
                                     </table>
                                 </div>
                                 <div className='mt-4'>
-                                    <div className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
+                                    <Link href="/keyword-manager" className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
                                         <span>View All Keywords</span>
                                         <span><RiArrowRightLine /></span>
-                                    </div>
+                                    </Link>
                                 </div>
                             </Card>
 
@@ -235,10 +236,10 @@ export default function IndexPage() {
                                     </table>
                                 </div>
                                 <div className='mt-4'>
-                                    <div className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
+                                    <Link href={'/keyword-manager'} className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
                                         <span>View All Keywords</span>
                                         <span><RiArrowRightLine /></span>
-                                    </div>
+                                    </Link>
                                 </div>
                             </Card>
                         </Grid>
@@ -302,10 +303,10 @@ export default function IndexPage() {
                                     </table>
                                 </div>
                                 <div className='mt-4'>
-                                    <div className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
+                                    <Link href="/serp-overview" className='bg-surface text-black border-none flex flex-row h-[38px] py-2 px-4 text-sm font-semibold rounded-lg w-fit cursor-pointer hover:bg-surface-600 '>
                                         <span>Show top 100 positions</span>
                                         <span><RiArrowRightLine /></span>
-                                    </div>
+                                    </Link>
                                 </div>
                             </Card>
                         </Grid>

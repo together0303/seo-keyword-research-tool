@@ -22,14 +22,12 @@ function FilterButton({
 }: FilterButtonTypes) {
     const [open, setOpen] = useState(false);
     return <>
-        <div>
-            <button onClick={() => setOpen(true)} className={`h-10 py-2 px-3 text-sm text-secondary border border-surface-400 hover:bg-surface rounded-lg flex justify-center items-center ${className}`}>
+            <button onClick={() => setOpen(true)} className={`h-9 py-2 px-3 text-sm text-secondary border border-surface-400 hover:bg-surface rounded-lg flex justify-center items-center ${className}`}>
                 <span>{text}</span>
                 <span className="text-primary ml-1 font-medium">{value}</span>
                 <RiArrowDropDownLine />
             </button>
             {/* {open && <PopupExample /> } */}
-        </div>
     </>;
 }
 
