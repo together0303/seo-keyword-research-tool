@@ -71,8 +71,7 @@ export default function IndexPage() {
   }
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl mt-16">
-      <Title>KD Research</Title>
-      <Text>Unlocking SEO Success: Understanding Keyword Difficulty with Research Tools</Text>
+      <Title>Components</Title>
       <div className='mt-4'>
         <Title className='my-4'>Search & Location</Title>
         <div className='bg-white p-3 gap-2 rounded-md max-w-[368px] sm:max-w-[768px] sm:flex flex-row sm:h-16'>
