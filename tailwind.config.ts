@@ -52,11 +52,30 @@ export default {
         'md': '992px',
         'lg': '1200px'
       },
+      maxWidth: {
+        'xs': '350px',
+        'sm': '768px',
+        'md': '992px',
+        'lg': '1200px'
+      },
+      width: {
+        'xs': '350px',
+        'sm': '768px',
+        'md': '992px',
+        'lg': '1200px'
+      },
       borderColor: {
         'default': '#D4DEDB',
-        'brand': '#05D5BF',
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
+          '600': '#04B7A6',
+        },
         'surface': {
           'DEFAULT': '#F1F4F3',
+          '50': '#F9FAFA',
+          '400': '#C5D3CF',
           '600': '#CAD1CF',
           '800': '#A8BDB7'
         },
@@ -65,9 +84,16 @@ export default {
         'primary': '#0B0F0D',
         'secondary': '#425752',
         'tertiary': '#58746D',
-        'brand': '#05D5BF',
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
+          '600': '#04B7A6',
+        },
         'surface': {
           'DEFAULT': '#F1F4F3',
+          '50': '#F9FAFA',
+          '400': '#C5D3CF',
           '600': '#CAD1CF',
           '800': '#A8BDB7'
         },
@@ -75,29 +101,50 @@ export default {
       backgroundColor: {
         'brand': {
           'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
           '600': '#04B7A6',
         },
         'surface': {
           'DEFAULT': '#F1F4F3',
+          '50': '#F9FAFA',
+          '400': '#C5D3CF',
           '600': '#CAD1CF',
           '800': '#A8BDB7'
         },
       },
       ringColor: {
-        'brand': '#05D5BF',
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
+          '600': '#04B7A6',
+        },
         'surface': {
           'DEFAULT': '#F1F4F3',
+          '50': '#F9FAFA',
+          '400': '#C5D3CF',
           '600': '#CAD1CF',
           '800': '#A8BDB7'
         },
       },
       fill: {
         'primary': '#0B0F0D',
-        'brand': '#05D5BF',
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
+          '600': '#04B7A6',
+        },
         'secondary': '#A8BDB7'
       },
       accent: {
-        'brand': '#05D5BF',
+        'brand': {
+          'DEFAULT': '#05D5BF',
+          '300': '#048B7E',
+          '400': '#036359',
+          '600': '#04B7A6',
+        },
       },
       boxShadow: {
         // light

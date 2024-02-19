@@ -1,9 +1,11 @@
 import './globals.css';
+import 'reactjs-popup/dist/index.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import Nav from './nav';
 import Toast from './toast';
 import { Suspense } from 'react';
+import Footer from './components/Footer';
 
 export const metadata = {
   title: 'Rankulate - Harnessing KD Research and Competitive Analysis Tools',
@@ -25,6 +27,7 @@ export default function RootLayout({
           <Nav />
         </Suspense>
         {children}
+        <Footer />
         {/* <Analytics /> */}
         {/* <Toast /> */}
       </body>
