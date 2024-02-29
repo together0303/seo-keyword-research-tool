@@ -11,12 +11,18 @@ import { Tooltip } from "../Tooltip";
 import test from "./TEST";
 import axios from "axios";
 import { API_URL } from "../../config";
+import MiniChart from "../MiniChart";
   
 export default function KeywordManager() {
     const [keyword, setKeyword] = useState<string>('');
-    const [country, setCountry] = useState<string>('United States');
+    const [country, setCountry] = useState<string>('');
     const [question, setQuesiton] = useState<boolean>(false)
     const [inited, setInited] = useState<boolean>(false);
+
+    const [perPage, setPerPage] = useState<number>(100);
+    const [page, setPage] = useState<number>(0);
+    const [pageChanged, setPageChanged] = useState<boolean>(false);
+
     const [filterKeyword, setFilterKeyword] = useState<string>('');
     const [checked, setChecked] = useState<number[]>([]);
     
@@ -36,6 +42,8 @@ export default function KeywordManager() {
       }
 
     function getBgClassByKD(kd: number) {
+        if (!kd) return 'hidden';
+
         if (kd > 90) return 'border-red-500 bg-red-400'
         else if (kd > 80) return 'border-orange-500 bg-orange-400'
         else if (kd > 65) return 'border-amber-500 bg-amber-400'
@@ -43,6 +51,28 @@ export default function KeywordManager() {
         else if (kd > 20) return 'border-lime-500 bg-lime-400'
         else return 'border-green-500 bg-green-400'
   
+    }
+
+    function convert_date_to_text(date_string: string) {
+        if (!date_string) return '';
+
+        const dateObject = new Date(date_string);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        if (dateObject.toDateString() === today.toDateString()) {
+            return 'Today';
+        } else if (dateObject.toDateString() === yesterday.toDateString()) {
+            return "Yesterday";;
+        } else {
+            const day = dateObject.getDate();
+            const month = dateObject.toLocaleString('en-US', {month: 'short'});
+            const year = dateObject.getFullYear();
+            return `${day} ${month} ${year}`;
+        }
     }
 
     const formatNumber = (num: number|null|undefined) => {
@@ -58,8 +88,8 @@ export default function KeywordManager() {
         }
     }
 
-    function load(k: string) {
-        axios.get(`${API_URL}/api/keywords/suggestions?keyword=${k}&country=${country}&question=${question}`)
+    function load(k: string = keyword, c: string = country, q: boolean = question) {
+        axios.get(`${API_URL}/api/keywords/suggestions?keyword=${k}&country=${c}&question=${q}&page=${page}&perPage=${perPage}`)
             .then((d: any) => {
                 console.log(d.data)
                 if (d.data?.success) {
@@ -74,24 +104,66 @@ export default function KeywordManager() {
             })
     }
 
+    function searchKeyword() {
+        if (keyword) {
+            console.log(keyword, country);
+            setSuggestions(null);
+            load();
+        }
+    }
+
+    function changePage(i: number) {
+        if (page === 0 && i === -1) return ;
+        if (page * perPage >= suggestions?.total_count && i === 1) return ;
+
+        setPage(page + i);
+        setPageChanged(true);
+    }
+    function changePerPage(i: number) {
+        setPerPage(i);
+        setPage(0);
+        setPageChanged(true);
+    }
+
     useEffect(() => {
         const init = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             
-            const c = urlParams.get('country');
+            let c = urlParams.get('country');
             if (c) setCountry(c);
-            const q = urlParams.get('question');
-            if (q) setQuesiton(true);
-            
+            else c = country;
+
+            let q: boolean = urlParams.get('question') === 'true' ? true : false;
+            if (q) setQuesiton(q);
+
             const k = urlParams.get('keyword');
             if (k &&  !inited) {
                 setKeyword(k);
                 setInited(true);
-                load(k);
+                load(k, c, q);
             }
         }
         init();
-    }, [])    
+    }, []);
+
+    useEffect(() => {
+        if (inited) {
+            const newURL = `/keyword-manager?keyword=${keyword}&country=${country}&question=${question}`;
+            window.history.pushState({}, '', newURL);
+        }
+    }, [keyword, country]);
+
+    useEffect(() => {
+        if (pageChanged) {
+            load();
+            setPageChanged(false);
+        }
+    }, [pageChanged]);
+
+    // useEffect(() => {
+    //     if (inited) {
+    //     }
+    // }, [page]);
     return (
         <>
             <div className='py-8'>
@@ -104,9 +176,9 @@ export default function KeywordManager() {
             <div className='flex flex-col gap-6'>
                 
                 <div className='bg-white p-3 gap-2 rounded-md max-w-[368px] sm:max-w-[768px] sm:flex flex-row sm:h-16'>
-                    <TextInput className='border-1 mt-2 sm:mt-0' icon={TTIcon} placeholder="Search..." />
+                    <TextInput className='border-1 mt-2 sm:mt-0' icon={TTIcon} placeholder="Search..." value={keyword} onChange={(e) => setKeyword(e.target.value)} />
                     <CountryPicker className="border-1 mt-2 sm:mt-0" country={country} setCountry={setCountry} />
-                    <Button icon={RiSearchLine} className='mt-2 sm:mt-0 bg-brand text-black border-none flex flex-row hover:bg-brand-600 pl-6'>
+                    <Button icon={RiSearchLine} onClick={searchKeyword} className='mt-2 sm:mt-0 bg-brand text-black border-none flex flex-row hover:bg-brand-600 pl-6'>
                         <span>Search Keyword</span>
                     </Button>
                 </div>
@@ -116,7 +188,7 @@ export default function KeywordManager() {
                     <Card className='p-4 sm:p-6 relative flex flex-col gap-6'>
                         <div>
                             <h3 className='text-primary text-lg font-semibold'>{ question ? "Long tail keywords & questions" : "All keywords" }</h3>
-                            <p className="text-secondary text-xs">{ formatNumber(suggestions?.items.total_count || 0) } results</p>
+                            <p className="text-secondary text-xs">{ (suggestions?.total_count || 0).toLocaleString() } results</p>
                         </div>
                         <div className='bg-white gap-2 rounded-md w-full sm:flex flex-row'>
                             <Button icon={RiFileCopyLine} className="h-9 bg-brand border-brand text-primary hover:bg-brand-600 hover:border-brand">Copy</Button>
@@ -136,9 +208,9 @@ export default function KeywordManager() {
                                     <th className='w-5/12 border-b border-default py-2 px-1 font-semibold text-left'>Keyword</th>
                                     <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>KD</th>
                                     <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>SV</th>
-                                    <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Global SV</th>
+                                    <th className='w-2/12 border-b border-default py-2 px-1 font-semibold text-right'>Monthly SV</th>
                                     <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>CPC</th>
-                                    <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>ET</th>
+                                    {/* <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>ET</th> */}
                                     <th className='border-b border-default py-2 px-1 font-semibold text-right'>Updated</th>
                                 </tr>
                                 </thead>
@@ -149,7 +221,7 @@ export default function KeywordManager() {
                                         <input type='checkbox' className='accent-brand h-3.5 w-3.5' onChange={(e) => handleChecked(e.target.checked, index)}/>
                                     </td>
                                     <td className='py-2 px-1 h-8 font-medium text-center'>
-                                        {index + 1}
+                                        {page * perPage + index + 1}
                                     </td>
                                     <td className='py-2 px-1 h-8 font-medium text-primary'>
                                         <div className='w-full flex justify-between '>
@@ -167,10 +239,10 @@ export default function KeywordManager() {
                                     </Tooltip>
                                     </td>
                                     <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {formatNumber(item.keyword_info.search_volume)} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {item.gsv} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> ${item.keyword_info.cpc} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> 1 </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary rounded-e-md'> 1 </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> <MiniChart values={item.keyword_info.monthly_searches?.map((s: any) => s.search_volume) || []} /> </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {item.keyword_info.cpc ? '$' + item.keyword_info.cpc : ''} </td>
+                                    {/* <td className='py-2 px-1 h-8 font-normal text-right text-primary'> 1 </td> */}
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary rounded-e-md'> {convert_date_to_text(item.keyword_info.last_updated_time)}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -178,8 +250,8 @@ export default function KeywordManager() {
                         </div>
                         <div className='mt-4 flex flex-wrap items-center gap-4'>
                             <div className="min-w-20 text-sm text-secondary">
-                                <Select defaultValue="50" >
-                                    <SelectItem value="50"><b>50</b> rows per page</SelectItem>
+                                <Select value={perPage.toString()} onValueChange={(e) => changePerPage(parseInt(e))} >
+                                    <SelectItem value="50">50 rows per page</SelectItem>
                                     <SelectItem value="100">100 rows per page</SelectItem>
                                     <SelectItem value="200">200 rows per page</SelectItem>
                                     <SelectItem value="250">250 rows per page</SelectItem>
@@ -188,9 +260,9 @@ export default function KeywordManager() {
                             </div>
                             <div className="min-w-20">
                                 <button className="h-9 py-2 px-3 text-sm text-secondary border border-surface-400 hover:bg-surface rounded-lg flex justify-center items-center">
-                                    <Icon icon={RiArrowLeftSLine} className="text-gray-400" />
-                                    <span className="text-primary ml-1 font-medium">1 - 50 from 617</span>
-                                    <Icon icon={RiArrowRightSLine} className="text-primary" />
+                                    <Icon icon={RiArrowLeftSLine} onClick={() => changePage(-1)} className={page === 0 ? "text-gray-400" : 'text-primary'} />
+                                    <span className="text-primary ml-1 font-medium">{page*perPage + 1} - {Math.min((page+1)*perPage, suggestions?.total_count || 0)} from {suggestions?.total_count || 0}</span>
+                                    <Icon icon={RiArrowRightSLine} onClick={() => changePage(1)} className={page * perPage >= suggestions?.total_count ? "text-gray-400" : 'text-primary'} />
                                 </button>
                             </div>
                         </div>           

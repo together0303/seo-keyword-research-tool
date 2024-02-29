@@ -41,7 +41,7 @@ const data = [
 
 export default function KeywordOverview() {
     const [keyword, setKeyword] = useState<string>('');
-    const [country, setCountry] = useState<string>('United States');
+    const [country, setCountry] = useState<string>('');
     const [inited, setInited] = useState<boolean>(false);
     const [sv, setSV] = useState<any>(null);
     const [gsv, setGSV] = useState<any>(null);
