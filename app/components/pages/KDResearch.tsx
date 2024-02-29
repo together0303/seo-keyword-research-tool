@@ -8,6 +8,7 @@ import CountryPicker from '../CountryPicker';
 import TTIcon from '../icons/TTIcon';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_URL } from '../../config';
 
 const allowedMimeTypes = [
   'text/csv',
@@ -16,7 +17,7 @@ const allowedMimeTypes = [
 
 export default function KDResearch() {
   const [keywords, setKeywords] = useState('');
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState('United States');
   const [file, setFile] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
@@ -72,15 +73,23 @@ export default function KDResearch() {
     }
   }
   const searchKeyword = () => {
-    let arr = keywords.split('\n').map((r: string) => r.trim()).filter((r: string) => r.length > 0);
-    console.log(arr)
-    axios.post('/api/keywords/search', {keywords: arr})
-      .then(data => {
-          console.log(data)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    let k = keywords.split('\n').map((r: string) => r.trim()).filter((r: string) => r.length > 0);
+    console.log(k)
+    if (k.length > 0) {
+      axios.post(API_URL + '/api/keywords/search', {keywords: k})
+        .then(data => {
+          if (k.length === 1) {
+            router.push(`/keyword-overview?keyword=${k[0]}&country=${country}`);
+          } else {
+            router.push(`/keyword-manager?country=${country}`);
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    } else {
+      setError("please input keywords or upload file.")
+    }
   }
   return (
     <>

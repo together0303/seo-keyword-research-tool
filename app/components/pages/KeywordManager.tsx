@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Badge, Button, Card, Grid, Icon, Select, SelectItem, TextInput } from "@tremor/react";
 import { RiArrowLeftLine, RiArrowLeftSLine, RiArrowRightSLine, RiFileCopyLine, RiSearchLine } from "@remixicon/react";
@@ -9,12 +9,18 @@ import CountryPicker from "../CountryPicker";
 import TTIcon from "../icons/TTIcon";
 import { Tooltip } from "../Tooltip";
 import test from "./TEST";
+import axios from "axios";
+import { API_URL } from "../../config";
   
 export default function KeywordManager() {
+    const [keyword, setKeyword] = useState<string>('');
+    const [country, setCountry] = useState<string>('United States');
+    const [question, setQuesiton] = useState<boolean>(false)
+    const [inited, setInited] = useState<boolean>(false);
     const [filterKeyword, setFilterKeyword] = useState<string>('');
-    const [country, setCountry] = useState<string>('');
     const [checked, setChecked] = useState<number[]>([]);
     
+    const [suggestions, setSuggestions] = useState<any>(null);
     const data = test();
 
     function handleChecked(c: Boolean, ind: number) {
@@ -38,6 +44,54 @@ export default function KeywordManager() {
         else return 'border-green-500 bg-green-400'
   
     }
+
+    const formatNumber = (num: number|null|undefined) => {
+        if (!num) return 0;
+        if (num > 999999999) {
+            return (num / 1000000000).toFixed(1) + "B";
+        } else if (num > 999999) {
+            return (num / 1000000).toFixed(1) + "M";
+        } else if (num > 999) {
+            return (num / 1000).toFixed(1) + "K";
+        } else {
+            return Math.floor(num);
+        }
+    }
+
+    function load(k: string) {
+        axios.get(`${API_URL}/api/keywords/suggestions?keyword=${k}&country=${country}&question=${question}`)
+            .then((d: any) => {
+                console.log(d.data)
+                if (d.data?.success) {
+                    const data = JSON.parse(d.data.data);
+                    console.log(data)
+                    if (data['result'][0]) setSuggestions(data['result'][0]);
+                    // console.log(data['result'][0]);
+                }
+            })
+            .catch(error => {
+                console.log(data);
+            })
+    }
+
+    useEffect(() => {
+        const init = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            const c = urlParams.get('country');
+            if (c) setCountry(c);
+            const q = urlParams.get('question');
+            if (q) setQuesiton(true);
+            
+            const k = urlParams.get('keyword');
+            if (k &&  !inited) {
+                setKeyword(k);
+                setInited(true);
+                load(k);
+            }
+        }
+        init();
+    }, [])    
     return (
         <>
             <div className='py-8'>
@@ -61,8 +115,8 @@ export default function KeywordManager() {
                 <Grid numItemsSm={1} numItemsLg={1} className="gap-4 sm:gap-6">
                     <Card className='p-4 sm:p-6 relative flex flex-col gap-6'>
                         <div>
-                            <h3 className='text-primary text-lg font-semibold'>All keywords</h3>
-                            <p className="text-secondary text-xs">4,677 results</p>
+                            <h3 className='text-primary text-lg font-semibold'>{ question ? "Long tail keywords & questions" : "All keywords" }</h3>
+                            <p className="text-secondary text-xs">{ formatNumber(suggestions?.items.total_count || 0) } results</p>
                         </div>
                         <div className='bg-white gap-2 rounded-md w-full sm:flex flex-row'>
                             <Button icon={RiFileCopyLine} className="h-9 bg-brand border-brand text-primary hover:bg-brand-600 hover:border-brand">Copy</Button>
@@ -89,7 +143,7 @@ export default function KeywordManager() {
                                 </tr>
                                 </thead>
                                 <tbody className='text-sm'>
-                                {data.map((item, index) => (
+                                {suggestions?.items.map((item: any, index: number) => (
                                     <tr key={index} className={`border-0 h-8 hover-parent ${checked.includes(index) ? 'bg-[#05D5BF12]' : 'hover:bg-surface'}`}>
                                     <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>
                                         <input type='checkbox' className='accent-brand h-3.5 w-3.5' onChange={(e) => handleChecked(e.target.checked, index)}/>
@@ -109,14 +163,14 @@ export default function KeywordManager() {
                                     </td>
                                     <td className='py-2 px-1 h-8 font-medium text-right text-primary'>
                                     <Tooltip content='Keyword difficulty - '>
-                                        <Badge className={`w-8 h-5 text-xs text-primary border ${getBgClassByKD(item.kd)}`}>{item.kd}</Badge>
+                                        <Badge className={`w-8 h-5 text-xs text-primary border ${getBgClassByKD(item.keyword_properties.keyword_difficulty)}`}>{item.keyword_properties.keyword_difficulty}</Badge>
                                     </Tooltip>
                                     </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {item.sv} </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {formatNumber(item.keyword_info.search_volume)} </td>
                                     <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {item.gsv} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> ${item.cpc} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {item.et} </td>
-                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary rounded-e-md'> {item.updated} </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> ${item.keyword_info.cpc} </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary'> 1 </td>
+                                    <td className='py-2 px-1 h-8 font-normal text-right text-primary rounded-e-md'> 1 </td>
                                     </tr>
                                 ))}
                                 </tbody>

@@ -38,9 +38,9 @@ export default function KDCart(props: {value: number}) {
         render();
     }, [props])
 
-    return <div className="flex justify-center align-center">
+    return <div className="flex justify-center align-center relative">
         <canvas width={200} height={130} ref={canvasRef}></canvas>
-        <div className="absolute bottom-6 w-full flex flex-col justify-center text-center">
+        <div className="absolute bottom-1 w-full flex flex-col justify-center text-center">
             <span className="text-3xl font-semibold">{props.value}</span>
             <span className="text-sm font-medium">Simple</span>
         </div>
