@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RiArrowRightLine, RiFileCopyLine, RiInformationLine, RiSearchLine } from '@remixicon/react';
-import { TextInput, Button, Grid, Card, BarChart, Badge } from '@tremor/react';
+import { RiArrowRightLine, RiFileCopyLine, RiInformationLine, RiLoaderLine, RiSearchLine } from '@remixicon/react';
+import { TextInput, Button, Grid, Card, BarChart, Badge, Icon } from '@tremor/react';
 import TTIcon from '../icons/TTIcon';
 import CountryPicker from '../CountryPicker';
 import KDCart from '../KDChart';
@@ -47,10 +47,15 @@ export default function KeywordOverview() {
     const [gsv, setGSV] = useState<any>(null);
     const [suggestions, setSuggestions] = useState<any>(null);
     const [questions, setQuestions] = useState<any>(null);
-    const [serp, setSerp] = useState<any>(null);
+    const [serps, setSerps] = useState<any>(null);
     
     const [filterKeyword, setFilterKeyword] = useState('');
     const [checked, setChecked] = useState<number[]>([]);
+
+    const [suggLoading, setSuggLoading] = useState<boolean>(false);
+    const [serpLoading, setSerpLoading] = useState<boolean>(false);
+    const [queLoading, setQueLoading] = useState<boolean>(false);
+
     function generateRandomNumbers(min: number, max: number, count: number) {
         const randomNumbers = [];
         for (let i = 0; i < count; i++) {
@@ -67,17 +72,6 @@ export default function KeywordOverview() {
         else if (kd > 20) return 'border-lime-500 bg-lime-400'
         else return 'border-green-500 bg-green-400'
 
-    }
-    function handleChecked(c: Boolean, ind: number) {
-        if (ind === -1) {
-
-        } else {
-            if (c) {
-                setChecked([...checked, ind]);
-            } else {
-                setChecked(checked.filter(cc => cc !== ind));
-            }
-        }
     }
 
     const formatNumber = (num: number|null|undefined) => {
@@ -166,6 +160,7 @@ export default function KeywordOverview() {
             })
     }
     function fetchSuggestions(k: string, c: string) {
+        setSuggLoading(true);
         axios.get(`${API_URL}/api/keywords/overview?keyword=${k}&country=${c}&action=suggestions`)
             .then((d: any) => {
                 if (d.data?.success) {
@@ -177,8 +172,12 @@ export default function KeywordOverview() {
             .catch(error => {
                 console.log(error);
             })
+            .finally(() => {
+                setSuggLoading(false);
+            })
     }
     function fetchQuestions(k: string, c: string) {
+        setQueLoading(true);
         axios.get(`${API_URL}/api/keywords/overview?keyword=${k}&country=${c}&action=questions`)
             .then((d: any) => {
                 if (d.data?.success) {
@@ -190,18 +189,25 @@ export default function KeywordOverview() {
             .catch(error => {
                 console.log(error);
             })
+            .finally(() => {
+                setQueLoading(false);
+            })
     }
     function fetchSerp(k: string, c: string) {
+        setSerpLoading(true);
         axios.get(`${API_URL}/api/keywords/overview?keyword=${k}&country=${c}&action=serp`)
             .then((d: any) => {
                 if (d.data?.success) {
                     const data = JSON.parse(d.data.data);
-                    if (data['result'][0]?.['items']) setSerp(data['result'][0]['items'].slice(0, 10));
+                    if (data) setSerps(data);
                     console.log(data);
                 }
             })
             .catch(error => {
                 console.log(error);
+            })
+            .finally(() => {
+                setSerpLoading(false);
             })
     }
     function searchKeyword() {
@@ -211,7 +217,7 @@ export default function KeywordOverview() {
             setGSV(null);
             setSuggestions(null);
             setQuestions(null);
-            setSerp(null);
+            setSerps(null);
             load(keyword, country);
         }
     }
@@ -354,7 +360,17 @@ export default function KeywordOverview() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {(!suggestions || (suggestions && suggestions.length === 0)) && 
+                                        {suggLoading && 
+                                            <tr className='border-0 h-10 hover-parent hover:bg-surface'>
+                                                <td className="text-center" colSpan={3}>
+                                                    <div className="flex justify-center items-center">
+                                                        <Icon icon={RiLoaderLine} className="animate-spin	"></Icon>
+                                                        <span>Loading...</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                        {!suggLoading && (suggestions && suggestions.length === 0 || !suggestions) && 
                                             <tr className='border-0 hover-parent hover:bg-surface'>
                                                 <td className="text-center p-2" colSpan={3}>
                                                     <div className="flex flex-col justify-center items-center">
@@ -406,7 +422,17 @@ export default function KeywordOverview() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {(!questions || (questions && questions.length === 0)) && 
+                                        {queLoading && 
+                                            <tr className='border-0 h-10 hover-parent hover:bg-surface'>
+                                                <td className="text-center" colSpan={3}>
+                                                    <div className="flex justify-center items-center">
+                                                        <Icon icon={RiLoaderLine} className="animate-spin	"></Icon>
+                                                        <span>Loading...</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                        {!queLoading && (questions && questions.length === 0 || !questions) && 
                                             <tr className='border-0 hover-parent hover:bg-surface'>
                                                 <td className="text-center p-2" colSpan={3}>
                                                     <div className="flex flex-col justify-center items-center">
@@ -435,54 +461,49 @@ export default function KeywordOverview() {
                                 <table className="w-full min-w-sm text-secondary border-separate border-spacing-x-0 border-spacing-y-1">
                                     <thead className='text-xs'>
                                         <tr>
-                                            <th className='border-b border-default py-2 px-1 font-semibold text-center'>
-                                                <input type='checkbox' className='accent-brand h-3.5 w-3.5' onChange={(e) => handleChecked(e.target.checked, -1)} />
-                                            </th>
                                             <th className='border-b border-default py-2 px-1 font-semibold text-center'>No.</th>
-                                            <th className='w-5/12 border-b border-default py-2 px-1 font-semibold text-left'>URL</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>KD</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>DA</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>UR</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Backlinks</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Ref.domains</th>
-                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Keywords</th>
-                                            {/* <th className='w-2/12 border-b border-default py-2 px-1 font-semibold text-right'>
-                            <Tooltip content='Search Volume'><span>SV</span></Tooltip>
-                            </th> */}
+                                            <th className='w-6/12 border-b border-default py-2 px-1 font-semibold text-left'>URL</th>
+                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Traffic</th>
+                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Domain.Rank</th>
+                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Page.Rank</th>
+                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Backliniks</th>
+                                            <th className='w-1/12 border-b border-default py-2 px-1 font-semibold text-right'>Ref.Domains</th>
                                         </tr>
                                     </thead>
                                     <tbody className='text-sm'>
-                                        {serp?.map((item:any, index:number) => (
-                                            <tr key={index} className={`border-0 h-8 hover-parent ${checked.includes(index) ? 'bg-[#05D5BF12]' : 'hover:bg-surface'}`}>
-                                                <td className='py-2 px-1 h-8 font-medium text-center rounded-s-md'>
-                                                    <input type='checkbox' className='accent-brand h-3.5 w-3.5' onChange={(e) => handleChecked(e.target.checked, index)} />
-                                                </td>
+                                        {serps?.serp.slice(0, 10).map((item:any, index:number) => (
+                                            <tr key={index} className={`border-0 h-8 hover-parent hover:bg-surface`}>
                                                 <td className='py-2 px-1 h-8 font-medium text-center'>
                                                     {index + 1}
                                                 </td>
                                                 <td className='py-2 px-1 h-8 font-medium text-primary'>
                                                     <div className='w-full flex justify-between '>
-                                                        <span>{item.url}</span>
-                                                        <Tooltip content='Copy URL'>
-                                                            <span className='hover-child cursor-pointer' onClick={() => copyClipboard(item.url)}>
-                                                                <RiFileCopyLine className='w-4 h-4 text-secondary' />
-                                                            </span>
-                                                        </Tooltip>
+                                                    <span>{item.url.slice(0, 65)} {item.url.length > 65 ? '...' : ''}</span>
+                                                    <Tooltip content='Copy URL'>
+                                                        <span className='hover-child cursor-pointer' onClick={() => copyClipboard(item.url)}>
+                                                        <RiFileCopyLine className='w-4 h-4 text-secondary'/>
+                                                        </span>
+                                                    </Tooltip>
                                                     </div>
                                                 </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary'>
-                                                    <Tooltip content='Keyword difficulty - '>
-                                                        <Badge className={`w-8 h-5 text-xs text-primary border ${getBgClassByKD(40)}`}>{40}</Badge>
-                                                    </Tooltip>
-                                                </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary'> 66 </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary'> 66 </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary'> 55,658 </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary'> 55,658 </td>
-                                                <td className='py-2 px-1 h-8 font-medium text-right text-primary rounded-e-md'> 765 </td>
+                                                <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {serps.traffic_estimation?.[index]['metrics']['organic']['etv'].toFixed(2) || ''} </td>
+                                                <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {serps.domain_ranks?.[index]['rank'] || ''} </td>
+                                                <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {serps.ranks?.[index]['rank'] || ''} </td>
+                                                <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {serps.backlinks?.[index]['backlinks'].toLocaleString() || ''} </td>
+                                                <td className='py-2 px-1 h-8 font-normal text-right text-primary'> {serps.referring_domains?.[index]['referring_domains'].toLocaleString() || ''} </td>
                                             </tr>
                                         ))}
-                                        {(!serp || (serp && serp.length === 0)) && 
+                                        {serpLoading && 
+                                            <tr className='border-0 h-10 hover-parent hover:bg-surface'>
+                                                <td className="text-center" colSpan={7}>
+                                                    <div className="flex justify-center items-center">
+                                                        <Icon icon={RiLoaderLine} className="animate-spin	"></Icon>
+                                                        <span>Loading...</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                        { !serpLoading && (serps && serps.serp.length === 0 || !serps) && 
                                             <tr className='border-0 hover-parent hover:bg-surface'>
                                                 <td className="text-center p-2" colSpan={9}>
                                                     <div className="flex flex-col justify-center items-center">
