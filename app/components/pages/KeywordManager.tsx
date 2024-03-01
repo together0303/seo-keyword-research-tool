@@ -290,7 +290,7 @@ export default function KeywordManager() {
                                         <td className="text-center p-4" colSpan={8}>
                                             <div className="flex flex-col justify-center items-center">
                                                 <span className="font-bold text-lg">No results found</span>
-                                                <span className="max-w-64">Try adjusting your search or filter options to find what you're looking for.</span>
+                                                <span className="max-w-64">Try adjusting your search or filter options to find what you&apos;re looking for.</span>
                                             </div>
                                         </td>
                                     </tr>
