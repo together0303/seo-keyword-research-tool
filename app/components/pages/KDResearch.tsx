@@ -17,7 +17,7 @@ const allowedMimeTypes = [
 
 export default function KDResearch() {
   const [keywords, setKeywords] = useState('');
-  const [country, setCountry] = useState('United States');
+  const [country, setCountry] = useState('');
   const [file, setFile] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
@@ -74,14 +74,20 @@ export default function KDResearch() {
   }
   const searchKeyword = () => {
     let k = keywords.split('\n').map((r: string) => r.trim()).filter((r: string) => r.length > 0);
+    k = k.filter((value, index, self) => self.indexOf(value) === index);
     console.log(k)
     if (k.length > 0) {
-      axios.post(API_URL + '/api/keywords/search', {keywords: k})
+      axios.post(API_URL + '/api/keywords/search', {keywords: k, country})
         .then(data => {
-          if (k.length === 1) {
-            router.push(`/keyword-overview?keyword=${k[0]}&country=${country}`);
+          if (data.data.success) {
+            if (k.length === 1) {
+              router.push(`/keyword-overview?keyword=${k[0]}&country=${country}`);
+            } else {
+              localStorage.setItem('rankulate-keywords', JSON.stringify(k));
+              router.push(`/keyword-manager?country=${country}&all=true`);
+            }
           } else {
-            router.push(`/keyword-manager?country=${country}`);
+            setError('Somthing error!')
           }
         })
         .catch(error => {

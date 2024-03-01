@@ -215,6 +215,9 @@ export default function KeywordOverview() {
             load(keyword, country);
         }
     }
+    function copyClipboard(k: string) {
+        if (k) navigator.clipboard.writeText(k);
+    }    
     useEffect(() => {
         const init = async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -226,9 +229,9 @@ export default function KeywordOverview() {
             const k = urlParams.get('keyword');
             if (k &&  !inited) {
                 setKeyword(k);
-                setInited(true);
                 load(k, c);
             }
+            setInited(true);
         }
         init();
     }, [])
@@ -339,8 +342,8 @@ export default function KeywordOverview() {
                                                 <td className='py-2 px-1 h-8 font-medium text-primary'>
                                                     <div className='w-full flex justify-between '>
                                                         <span>{item.keyword}</span>
-                                                        <Tooltip content='Copy'>
-                                                            <span className='hover-child cursor-pointer'>
+                                                        <Tooltip content='Copy Keyword'>
+                                                            <span className='hover-child cursor-pointer' onClick={() => copyClipboard(item.keyword)}>
                                                                 <RiFileCopyLine className='w-4 h-4 text-secondary' />
                                                             </span>
                                                         </Tooltip>
@@ -351,6 +354,15 @@ export default function KeywordOverview() {
                                                 </td>
                                             </tr>
                                         ))}
+                                        {(!suggestions || (suggestions && suggestions.length === 0)) && 
+                                            <tr className='border-0 hover-parent hover:bg-surface'>
+                                                <td className="text-center p-2" colSpan={3}>
+                                                    <div className="flex flex-col justify-center items-center">
+                                                        <span className="font-semibold text-md">No results found</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -382,8 +394,8 @@ export default function KeywordOverview() {
                                                 <td className='py-2 px-1 h-8 font-medium text-primary'>
                                                     <div className='w-full flex justify-between '>
                                                         <span>{item.keyword}</span>
-                                                        <Tooltip content='Copy'>
-                                                            <span className='hover-child cursor-pointer'>
+                                                        <Tooltip content='Copy Keyword'>
+                                                            <span className='hover-child cursor-pointer' onClick={() => copyClipboard(item.keyword)}>
                                                                 <RiFileCopyLine className='w-4 h-4 text-secondary' />
                                                             </span>
                                                         </Tooltip>
@@ -394,6 +406,15 @@ export default function KeywordOverview() {
                                                 </td>
                                             </tr>
                                         ))}
+                                        {(!questions || (questions && questions.length === 0)) && 
+                                            <tr className='border-0 hover-parent hover:bg-surface'>
+                                                <td className="text-center p-2" colSpan={3}>
+                                                    <div className="flex flex-col justify-center items-center">
+                                                        <span className="font-semibold text-md">No results found</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -443,7 +464,7 @@ export default function KeywordOverview() {
                                                     <div className='w-full flex justify-between '>
                                                         <span>{item.url}</span>
                                                         <Tooltip content='Copy URL'>
-                                                            <span className='hover-child cursor-pointer'>
+                                                            <span className='hover-child cursor-pointer' onClick={() => copyClipboard(item.url)}>
                                                                 <RiFileCopyLine className='w-4 h-4 text-secondary' />
                                                             </span>
                                                         </Tooltip>
@@ -461,6 +482,15 @@ export default function KeywordOverview() {
                                                 <td className='py-2 px-1 h-8 font-medium text-right text-primary rounded-e-md'> 765 </td>
                                             </tr>
                                         ))}
+                                        {(!serp || (serp && serp.length === 0)) && 
+                                            <tr className='border-0 hover-parent hover:bg-surface'>
+                                                <td className="text-center p-2" colSpan={9}>
+                                                    <div className="flex flex-col justify-center items-center">
+                                                        <span className="font-semibold text-md">No results found</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
